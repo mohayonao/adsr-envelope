@@ -1,1 +1,3 @@
-export default {};
+import ADSREnvelope from "./ADSREnvelope";
+
+export default ADSREnvelope;
