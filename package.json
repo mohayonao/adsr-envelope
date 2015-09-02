@@ -1,0 +1,24 @@
+{
+  "name": "@mohayonao/adsr-envelope",
+  "description": "adsr envelope",
+  "version": "0.0.0",
+  "author": "mohayonao <mohayonao@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/mohayonao/adsr-envelope/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "files": [
+    "package.json",
+    "README.md",
+    "index.js",
+    "lib"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mohayonao/adsr-envelope/"
+  },
+  "scripts": {}
+}
