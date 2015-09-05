@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ADSREnvelope</title>
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300">
+  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <style>
+    * { font-family: "Roboto", sans-serif; }
+    textarea { font-family: "Courier", monospace; }
+    canvas { margin-top: 15px; width: 100%; height: 240px; background: #e0e0e0; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div id="app" class="container">
+    <h1>ADSREnvelope</h1>
+      <div class="form-group col">
+        <button class="btn btn-default" v-on="click:play">play envelope</button>
+      </div>
+      <div class="rows">
+        <div class="col-md-6">
+          <textarea class="form-control" rows="12" style="color: {{ error ? 'red' : 'black' }}" v-model="data" v-on="input:onInput"></textarea>
+        </div>
+        <div class="col-md-6">
+          <textarea class="form-control" rows="12" v-model="code"></textarea>
+        </div>
+      </div>
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/vue/0.12.12/vue.min.js"></script>
+  <script src="./build/adsr-envelope.js"></script>
+  <script>
+  window.AudioContext = window.AudioContext || window.webkitAudioContext;
+  window.OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  window.onload = function() {
+    "use strict";
+
+    var DefaultParams = {
+      attackTime: 0.01,
+      decayTime: 0.3,
+      sustainLevel: 0.5,
+      releaseTime: 1,
+      gateTime: 1,
+      peakLevel: 1,
+      epsilon: 0.001,
+      attackCurve: "lin",
+      decayCurve: "lin",
+      releaseCurve: "lin",
+    };
+    var audioContext = new AudioContext();
+    var canvas = document.getElementById("canvas");
+    var imageData = null;
+    var duration = 0;
+    var startTime = -1;
+    var gcGuard = [];
+
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+
+    function isValidJSON(data) {
+      try {
+        return !!JSON.parse(data);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function play(env) {
+      var t0 = audioContext.currentTime;
+      var t1 = t0 + env.duration;
+      var osc1 = audioContext.createOscillator();
+      var osc2 = audioContext.createOscillator();
+      var envGain = audioContext.createGain();
+      var ampGain = audioContext.createGain();
+      var pack = [ osc1, osc2, envGain, ampGain ];
+
+      function reset() {
+        gcGuard.splice(0).forEach(function(pack) {
+          pack.forEach(function(node) {
+            node.disconnect();
+          });
+        });
+        startTime = -1;
+      }
+
+      reset();
+
+      osc1.type = "triangle";
+      osc2.type = "triangle";
+      osc1.frequency.value = 880;
+      osc2.frequency.value = 880;
+      osc1.detune.value = +10;
+      osc2.detune.value = -10;
+
+      osc1.start(t0);
+      osc2.start(t0);
+      osc1.stop(t1);
+      osc2.stop(t1);
+
+      osc1.onended = reset;
+      gcGuard.push(pack);
+
+      env.applyTo(envGain.gain, t0);
+
+      ampGain.gain.value = 0.25;
+
+      osc1.connect(envGain);
+      osc2.connect(envGain);
+      envGain.connect(ampGain);
+      ampGain.connect(audioContext.destination);
+
+      startTime = t0;
+
+      requestAnimationFrame(animate);
+    }
+
+    function animate() {
+      var context = canvas.getContext("2d");
+
+      context.putImageData(imageData, 0, 0);
+
+      if (startTime === -1) {
+        return;
+      }
+
+      var t = (audioContext.currentTime - startTime) / duration;
+      var x0 = ((t * canvas.width)|0) + 0.5;
+      var x1 = x0;
+      var y0 = 0;
+      var y1 = canvas.height;
+
+      context.strokeStyle = "#f1c40f";
+      context.lineWidth = 1;
+
+      context.beginPath();
+      context.moveTo(x0, y0);
+      context.lineTo(x1, y1);
+      context.stroke();
+
+      requestAnimationFrame(animate);
+    }
+
+    function draw(env) {
+      startTime = -1;
+
+      var context = canvas.getContext("2d");
+      var x, i;
+
+      duration = (((env.duration / 5)|0) + 1) * 5;
+
+      context.fillStyle = "#2c3e50";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+
+      context.strokeStyle = "#95a5a6";
+      context.lineWidth = 1;
+
+      for (i = 1; i < duration; i++) {
+        x = (((i / duration) * canvas.width)|0) + 0.5;
+
+        context.beginPath();
+        context.moveTo(x, 0);
+        context.lineTo(x, canvas.height);
+        context.stroke();
+      }
+
+      drawByEnvelope(context, duration, env);
+      drawByWebAudio(context, duration, env);
+    }
+
+    function drawByEnvelope(context, duration, env) {
+      var t, v, y, x;
+      var i, imax;
+
+      context.strokeStyle = "rgba(22, 160, 133, 0.8)";
+      context.lineWidth = 8;
+      context.lineCap = "round";
+
+      context.beginPath();
+      for (i = 0, imax = canvas.width; i < imax; i++) {
+        t = (i / imax) * duration;
+        v = env.valueAt(t);
+        y = canvas.height - (canvas.height * v);
+        x = (i / imax) * canvas.width;
+
+        context.lineTo(x, y);
+      }
+      context.stroke();
+
+      imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    }
+
+    function drawByWebAudio(context, duration, env) {
+      context.strokeStyle = "rgba(46, 204, 113, 0.8)";
+      context.lineWidth = 3;
+      context.lineCap = "round";
+
+      fetchSamples(env, 8000, duration, function(samples) {
+        var t, v, y, x;
+        var i, imax;
+
+        context.beginPath();
+        for (i = 0, imax = canvas.width; i < imax; i++) {
+          t = (i / imax) * duration;
+          v = samples[(t * 8000)|0] || 0;
+          y = canvas.height - (canvas.height * v);
+          x = (i / imax) * canvas.width;
+
+          context.lineTo(x, y);
+        }
+        context.stroke();
+
+        imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      });
+    }
+
+    function fetchSamples(env, sampleRate, duration, callback) {
+      var context = new OfflineAudioContext(1, (duration * sampleRate)|0, sampleRate);
+      var bufSrc = context.createBufferSource();
+      var buffer = context.createBuffer(1, 4, sampleRate);
+      var gain = context.createGain();
+
+      buffer.getChannelData(0).set(new Float32Array([ 1, 1, 1, 1 ]));
+
+      bufSrc.buffer = buffer;
+      bufSrc.loop = true;
+      bufSrc.start(0);
+
+      env.applyTo(gain.gain, 0);
+
+      bufSrc.connect(gain);
+      gain.connect(context.destination);
+
+      context.oncomplete = function(e) {
+        callback(e.renderedBuffer.getChannelData(0));
+      };
+
+      context.startRendering();
+    }
+
+    new Vue({
+      el: "#app",
+      data: {
+        data: JSON.stringify(DefaultParams, null, 2),
+        code: "",
+        error: false,
+      },
+      methods: {
+        play: function() {
+          var env = new ADSREnvelope(JSON.parse(this.data));
+
+          play(env);
+
+          return this;
+        },
+        draw: function() {
+          var env = new ADSREnvelope(JSON.parse(this.data));
+
+          draw(env);
+
+          return this;
+        },
+        update: function() {
+          this.code = new ADSREnvelope(JSON.parse(this.data)).getMethods().map(function(items) {
+            return "param." + items[0] + "(" + items[1] + ", " + items[2] + ");";
+          }).join("\n");
+
+          return this;
+        },
+        onInput: function() {
+          this.error = !isValidJSON(this.data);
+          if (!this.error) {
+            this.draw();
+          }
+          this.update();
+        }
+      }
+    }).update().draw();
+  };
+  </script>
+</body>
+</html>
