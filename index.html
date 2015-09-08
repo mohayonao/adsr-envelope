@@ -261,7 +261,7 @@
           return this;
         },
         update: function() {
-          this.code = new ADSREnvelope(JSON.parse(this.data)).getMethods().map(function(items) {
+          this.code = new ADSREnvelope(JSON.parse(this.data)).getWebAudioAPIMethods().map(function(items) {
             return "param." + items[0] + "(" + items[1] + ", " + items[2] + ");";
           }).join("\n");
 
