@@ -9,15 +9,21 @@
     * { font-family: "Roboto", sans-serif; }
     textarea { font-family: "Courier", monospace; }
     canvas { margin-top: 15px; width: 100%; height: 240px; background: #e0e0e0; border-radius: 4px; }
+    .btn { width: 100%; }
   </style>
 </head>
 <body>
   <div id="app" class="container">
     <h1>ADSREnvelope</h1>
-      <div class="form-group col">
-        <button class="btn btn-default" v-on="click:play">play envelope</button>
+      <div class="row">
+        <div class="col-md-2 form-group">
+          <button class="btn btn-default" v-on="click:play">preview</button>
+        </div>
+        <div class="col-md-10">
+          <select class="form-control" v-model="selectedMIDIDevice" options="midiDevices" v-if="midiDevices" v-on="change:selectMIDIDevice"></select>
+        </div>
       </div>
-      <div class="rows">
+      <div class="row">
         <div class="col-md-6">
           <textarea class="form-control" rows="12" style="color: {{ error ? 'red' : 'black' }}" v-model="data" v-on="input:onInput"></textarea>
         </div>
@@ -53,7 +59,8 @@
     var imageData = null;
     var duration = 0;
     var startTime = -1;
-    var gcGuard = [];
+    var GCGuard = [];
+    var midiAccess = null;
 
     canvas.width = canvas.clientWidth;
     canvas.height = canvas.clientHeight;
@@ -76,7 +83,7 @@
       var pack = [ osc1, osc2, envGain, ampGain ];
 
       function reset() {
-        gcGuard.splice(0).forEach(function(pack) {
+        GCGuard.splice(0).forEach(function(pack) {
           pack.forEach(function(node) {
             node.disconnect();
           });
@@ -99,7 +106,7 @@
       osc2.stop(t1);
 
       osc1.onended = reset;
-      gcGuard.push(pack);
+      GCGuard.push(pack);
 
       env.applyTo(envGain.gain, t0);
 
@@ -238,12 +245,113 @@
       context.startRendering();
     }
 
-    new Vue({
+    function midiSuccessCallback(_midiAccess) {
+      midiAccess = _midiAccess;
+      midiAccess.onstatechange = midiOnStateChange;
+      midiOnStateChange();
+    }
+
+    function midiOnStateChange() {
+      var list = [
+        { text: "select midi keyboard", value: "" },
+      ];
+      var iter = midiAccess.inputs.values();
+
+      for (var x = iter.next(); !x.done; x = iter.next()) {
+        list.push({
+          text: x.value.name, value: x.value.name,
+        });
+      }
+
+      app.midiDevices = list;
+    }
+
+    function findMIDIPortByName(iter, deviceName) {
+      for (var x = iter.next(); !x.done; x = iter.next()) {
+        if (x.value.name === deviceName) {
+          return x.value;
+        }
+      }
+
+      return null;
+    }
+
+    function midicps(noteNumber) {
+      return 440 * Math.pow(2, (noteNumber - 69) * 1 / 12);
+    }
+
+    function MIDINote(audioContext, noteNumber) {
+      this.audioContext = audioContext;
+      this.noteNumber = noteNumber;
+      this.startTime = 0;
+      this.envelope = null;
+      this.oscillator1 = null;
+      this.oscillator2 = null;
+      this.gain = null;
+    }
+
+    MIDINote.prototype.noteOn = function(playbackTime) {
+      if (typeof playbackTime === "undefined") {
+        playbackTime = this.audioContext.currentTime;
+      }
+
+      this.envelope = new ADSREnvelope(JSON.parse(app.data));
+      this.envelope.gateTime = Infinity;
+      this.envelope.peakLevel *= 0.5;
+      this.startTime = playbackTime;
+
+      this.gain = this.audioContext.createGain();
+      this.envelope.applyTo(this.gain.gain, this.startTime);
+      this.gain.connect(this.audioContext.destination);
+
+      this.oscillator1 = this.audioContext.createOscillator();
+      this.oscillator1.type = "triangle";
+      this.oscillator1.frequency.value = midicps(this.noteNumber);
+      this.oscillator1.detune.value = +10;
+      this.oscillator1.start(this.startTime);
+      this.oscillator1.onended = function() {
+        this.oscillator1.disconnect();
+        this.oscillator2.disconnect();
+        this.gain.disconnect();
+        this.oscillator1 = this.oscillator2 = this.gain = null;
+      }.bind(this);
+      this.oscillator1.connect(this.gain);
+
+      this.oscillator2 = this.audioContext.createOscillator();
+      this.oscillator2.type = "triangle";
+      this.oscillator2.frequency.value = midicps(this.noteNumber);
+      this.oscillator2.detune.value = -10;
+      this.oscillator2.start(this.startTime);
+      this.oscillator2.connect(this.gain);
+    };
+
+    MIDINote.prototype.noteOff = function(playbackTime) {
+      if (typeof playbackTime === "undefined") {
+        playbackTime = this.audioContext.currentTime;
+      }
+
+      var startTime = this.startTime;
+      var gateTime = playbackTime - startTime;
+
+      this.gain.gain.cancelScheduledValues(startTime);
+
+      this.envelope.gateTime = gateTime;
+      this.envelope.applyTo(this.gain.gain, startTime);
+
+      this.oscillator1.stop(startTime + this.envelope.duration);
+      this.oscillator2.stop(startTime + this.envelope.duration);
+    };
+
+    var midiKeyboard = new MIDINote(audioContext);
+
+    var app = new Vue({
       el: "#app",
       data: {
         data: JSON.stringify(DefaultParams, null, 2),
         code: "",
         error: false,
+        selectedMIDIDevice: "",
+        midiDevices: null,
       },
       methods: {
         play: function() {
@@ -267,6 +375,44 @@
 
           return this;
         },
+        selectMIDIDevice: function() {
+          if (this.selectedMIDIDevice === "") {
+            return;
+          }
+
+          var midiDevice = findMIDIPortByName(midiAccess.inputs.values(), this.selectedMIDIDevice);
+
+          if (midiDevice) {
+            midiDevice.open().then(function() {
+              var keyMap = [];
+
+              midiDevice.onmidimessage = function(e) {
+                var st = e.data[0], d1 = e.data[1], d2 = e.data[2];
+                var messageType = st & 0xf0;
+
+                if (messageType === 0x80) {
+                  if (keyMap[d1]) {
+                    keyMap[d1].noteOff();
+                    keyMap[d1] = null;
+                  }
+                }
+                if (messageType === 0x90) {
+                  if (d2 === 0) {
+                    if (keyMap[d1]) {
+                      keyMap[d1].noteOff();
+                      keyMap[d1] = null;
+                    }
+                  } else {
+                    if (!keyMap[d1]) {
+                      keyMap[d1] = new MIDINote(audioContext, d1);
+                      keyMap[d1].noteOn();
+                    }
+                  }
+                }
+              };
+            });
+          }
+        },
         onInput: function() {
           this.error = !isValidJSON(this.data);
           if (!this.error) {
@@ -276,6 +422,10 @@
         }
       }
     }).update().draw();
+
+    if (typeof window.navigator.requestMIDIAccess === "function") {
+      window.navigator.requestMIDIAccess().then(midiSuccessCallback);
+    }
   };
   </script>
 </body>
