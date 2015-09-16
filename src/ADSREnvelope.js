@@ -93,20 +93,20 @@ export default class ADSREnvelope {
     return this._.releaseCurve;
   }
 
-  valueAt(time) {
+  valueAt(time = 0) {
     return this._.valueAt(time);
   }
 
   applyTo(audioParam, playbackTime) {
-    this.getWebAudioAPIMethods().forEach(([ method, value, time ]) => {
-      audioParam[method](value, time + playbackTime);
+    this.getWebAudioAPIMethods(playbackTime).forEach(([ method, value, time ]) => {
+      audioParam[method](value, time);
     });
 
     return this;
   }
 
-  getWebAudioAPIMethods() {
-    return this._.methods();
+  getWebAudioAPIMethods(playbackTime = 0) {
+    return this._.methods(playbackTime);
   }
 
   clone() {

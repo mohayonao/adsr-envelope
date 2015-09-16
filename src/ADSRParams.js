@@ -26,8 +26,10 @@ export default class ADSRParams {
     return EnvelopeValue.at(this.envelope, time);
   }
 
-  methods() {
-    return this.envelope.map(([ type, value, time ]) => [ method(type), value, time ]);
+  methods(playbackTime) {
+    return this.envelope.map(([ type, value, time ]) => {
+      return [ method(type), value, playbackTime + time ];
+    });
   }
 
   setDuration(value) {
