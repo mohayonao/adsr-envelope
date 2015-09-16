@@ -1,7 +1,7 @@
 {
   "name": "@mohayonao/adsr-envelope",
   "description": "adsr envelope",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "mohayonao <mohayonao@gmail.com>",
   "bugs": {
     "url": "https://github.com/mohayonao/adsr-envelope/issues"
