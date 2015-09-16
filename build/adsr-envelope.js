@@ -29,20 +29,22 @@ var ADSREnvelope = (function () {
 
   _createClass(ADSREnvelope, [{
     key: "valueAt",
-    value: function valueAt(time) {
+    value: function valueAt() {
+      var time = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
       return this._.valueAt(time);
     }
   }, {
     key: "applyTo",
     value: function applyTo(audioParam, playbackTime) {
-      this.getWebAudioAPIMethods().forEach(function (_ref) {
+      this.getWebAudioAPIMethods(playbackTime).forEach(function (_ref) {
         var _ref2 = _slicedToArray(_ref, 3);
 
         var method = _ref2[0];
         var value = _ref2[1];
         var time = _ref2[2];
 
-        audioParam[method](value, time + playbackTime);
+        audioParam[method](value, time);
       });
 
       return this;
@@ -50,7 +52,9 @@ var ADSREnvelope = (function () {
   }, {
     key: "getWebAudioAPIMethods",
     value: function getWebAudioAPIMethods() {
-      return this._.methods();
+      var playbackTime = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+
+      return this._.methods(playbackTime);
     }
   }, {
     key: "clone",
@@ -228,14 +232,15 @@ var ADSRParams = (function () {
     }
   }, {
     key: "methods",
-    value: function methods() {
+    value: function methods(playbackTime) {
       return this.envelope.map(function (_ref) {
         var _ref2 = _slicedToArray(_ref, 3);
 
         var type = _ref2[0];
         var value = _ref2[1];
         var time = _ref2[2];
-        return [method(type), value, time];
+
+        return [method(type), value, playbackTime + time];
       });
     }
   }, {
