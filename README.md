@@ -13,6 +13,9 @@ Node.js
 npm install @mohayonao/adsr-envelope
 ```
 
+## Online Demo
+- http://mohayonao.github.io/adsr-envelope/
+
 ## ADSR
 
 ![ADSREnvelope](https://github.com/mohayonao/adsr-envelope/wiki/images/ADSREnvelope.png)
@@ -48,12 +51,13 @@ npm install @mohayonao/adsr-envelope
 - `releaseCurve: string`
 
 #### Instance Methods
-- `valueAt(time: number): number`
-- `applyTo(audioParam: AudioParam, playbackTime: number): self`
-- `getWebAudioAPIMethods(): Array[]`
+- `valueAt(time: number = 0): number`
+- `applyTo(audioParam: AudioParam, playbackTime: number = 0): self`
+- `getWebAudioAPIMethods(playbackTime: number = 0): Array[]`
 - `clone(): ADSREnvelope`
 
 ## Example
+### sequencer model
 
 ```js
 import ADSREnvelope from "@mohayonao/adsr-envelope";
@@ -61,7 +65,7 @@ import ADSREnvelope from "@mohayonao/adsr-envelope";
 let audioContext = new AudioContext();
 let oscillator = audioContext.createOscillator();
 let gain = audioContext.createGain();
-let adsr = new ADSR({
+let adsr = new ADSREnvelope({
   attackTime: 0.5,
   decayTime: 0.25,
   sustainLevel: 0.8,
@@ -86,6 +90,74 @@ oscillator.stop(audioContext.currentTime + adsr.duration);
 
 oscillator.connect(gain);
 gain.connect(audioContext.destination);
+```
+
+### noteOn / noteOff model
+
+```js
+import ADSREnvelope from "@mohayonao/adsr-envelope";
+
+let audioContext = new AudioContext();
+let adsr = new ADSREnvelope({
+  attackTime: 0.5,
+  decayTime: 0.25,
+  sustainLevel: 0.8,
+  releaseTime: 2.5,
+  gateTime: 6,
+  releaseCurve: "exp",
+});
+let noteMap = {};
+
+class Note {
+  constructor(audioContext, noteNumber, envelope) {
+    this.audioContext = audioContext;
+    this.noteNumber = noteNumber;
+    this.envelope = envelope;
+    this.startTime = 0;
+    this.oscillator = audioContext.createOscillator();
+    this.gain = audioContext.createGain();
+
+    this.oscillator.frequency.value = midicps(noteNumber);
+    this.oscillator.onended = () => {
+      this.oscillator.disconnect();
+      this.gain.disconnect();
+    };
+
+    this.oscillator.connect(this.gain);
+    this.gain.connect(audioContext.destination);
+  }
+
+  noteOn(playbackTime = this.audioContext.currentTime) {
+    this.startTime = playbackTime;
+    this.envelope.gateTime = Infinity;
+    this.envelope.applyTo(this.gain.gain, playbackTime);
+    this.oscillator.start(playbackTime);
+  }
+
+  noteOff(playbackTime = this.audioContext.currentTime) {
+    this.gain.gain.cancelScheduledValues(this.startTime);
+
+    this.envelope.gateTime = playbackTime - this.startTime;
+    this.envelope.applyTo(this.gain.gain, this.startTime);
+
+    this.oscillator.stop(this.startTime + this.envelope.duration);
+  }
+}
+
+midiKeyboard.on("noteOn", ({ noteNumber }) => {
+  if (noteMap[noteNumber]) {
+    noteMap[noteNumber].noteOff();
+  }
+
+  noteMap[noteNumber] = new Note(audioContext, noteNumber, adsr);
+  noteMap[noteNumber].noteOn();
+});
+midiKeyboard.on("noteOff", ({ noteNumber }) => {
+  if (noteMap[noteNumber]) {
+    noteMap[noteNumber].noteOff();
+  }
+  noteMap[noteNumber] = null;
+});
 ```
 
 ## License
