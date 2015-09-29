@@ -29,6 +29,14 @@ export default class ADSREnvelope {
     return this._.decayTime;
   }
 
+  set sustainTime(value) {
+    this._.setSustainTime(value);
+  }
+
+  get sustainTime() {
+    return this._.sustainTime;
+  }
+
   set sustainLevel(value) {
     this._.setSustainLevel(value);
   }
