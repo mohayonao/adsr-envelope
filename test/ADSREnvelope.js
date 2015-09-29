@@ -49,21 +49,24 @@ describe("ADSREnvelope", () => {
   });
   describe("#duration: number", () => {
     it("works", () => {
-      let env = new ADSREnvelope({ gateTime: 10, releaseTime: 5 });
+      let env = new ADSREnvelope({ attackTime: 2, decayTime: 3, gateTime: 10, releaseTime: 5 });
 
       assert(env.duration === 15);
 
       env.duration = 20;
       assert(env.duration === 20);
+      assert(env.sustainTime === 10);
       assert(env.gateTime === 15);
       assert(env.releaseTime === 5);
 
       env.duration = -10;
       assert(env.duration === 5);
+      assert(env.sustainTime === 0);
       assert(env.gateTime === 0);
 
       env.duration = NaN;
       assert(env.duration === 5);
+      assert(env.sustainTime === 0);
       assert(env.gateTime === 0);
     });
   });
@@ -93,6 +96,30 @@ describe("ADSREnvelope", () => {
 
       env.decayTime = NaN;
       assert(env.decayTime === 0);
+    });
+  });
+  describe("#sustainTime: number", () => {
+    it("works", () => {
+      let env = new ADSREnvelope({ attackTime: 2, decayTime: 3, sustainTime: 10, releaseTime: 5 });
+
+      assert(env.sustainTime === 10);
+      assert(env.gateTime === 15);
+      assert(env.duration === 20);
+
+      env.sustainTime = 5;
+      assert(env.sustainTime === 5);
+      assert(env.gateTime === 10);
+      assert(env.duration === 15);
+
+      env.sustainTime = -10;
+      assert(env.sustainTime === 0);
+      assert(env.gateTime === 5);
+      assert(env.duration === 10);
+
+      env.sustainTime = NaN;
+      assert(env.sustainTime === 0);
+      assert(env.gateTime === 5);
+      assert(env.duration === 10);
     });
   });
   describe("#sustainLevel: number", () => {

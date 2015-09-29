@@ -13,12 +13,23 @@ export default class ADSRParams {
     this.decayTime = time(defaults(opts.decayTime, defaultValues.decayTime));
     this.sustainLevel = level(defaults(opts.sustainLevel, defaultValues.sustainLevel));
     this.releaseTime = time(defaults(opts.releaseTime, defaultValues.releaseTime));
-    this.gateTime = time(defaults(opts.gateTime, defaultValues.gateTime));
     this.peakLevel = time(defaults(opts.peakLevel, defaultValues.peakLevel));
     this.epsilon = epsilon(defaults(opts.epsilon, defaultValues.epsilon));
     this.attackCurve = curve(defaults(opts.attackCurve, defaultValues.attackCurve));
     this.decayCurve = curve(defaults(opts.decayCurve, defaultValues.decayCurve));
     this.releaseCurve = curve(defaults(opts.releaseCurve, defaultValues.releaseCurve));
+    this.gateTime = defaultValues.gateTime;
+
+    if (isFiniteNumber(opts.sustainTime)) {
+      this.setSustainTime(opts.sustainTime);
+    }
+    if (isFiniteNumber(opts.gateTime)) {
+      this.setGateTime(opts.gateTime);
+    }
+    if (isFiniteNumber(opts.duration)) {
+      this.setDuration(opts.duration);
+    }
+
     this.update();
   }
 
@@ -46,6 +57,12 @@ export default class ADSRParams {
   setDecayTime(value) {
     this.decayTime = time(value);
     this.update();
+  }
+
+  setSustainTime(value) {
+    let sustainTime = time(value);
+
+    this.setGateTime(this.attackTime + this.decayTime + sustainTime);
   }
 
   setSustainLevel(value) {
@@ -89,9 +106,14 @@ export default class ADSRParams {
   }
 
   update() {
+    this.sustainTime = Math.max(0, this.gateTime - this.attackTime - this.decayTime);
     this.duration = this.gateTime + this.releaseTime;
     this.envelope = EnvelopeBuilder.build(this);
   }
+}
+
+function isFiniteNumber(value) {
+  return typeof value === "number" && isFinite(value);
 }
 
 function time(value) {
