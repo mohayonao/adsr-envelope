@@ -28,6 +28,8 @@ npm install @mohayonao/adsr-envelope
   - `sustainLevel: number` _default: **0.5**_
   - `releaseTime: number` _default: **1** (1sec)_
   - `gateTime: number` _default: **1** (1sec)_
+  - `sustainTime: number`
+  - `duration: number`
   - `peakLevel: number` _default: **1**_
   - `epsilon: number` _default: **0.001**_
   - `attackCurve: string` _default: **lin**_
@@ -41,6 +43,7 @@ npm install @mohayonao/adsr-envelope
 - `duration: number`
 - `attackTime: number`
 - `decayTime: number`
+- `sustainTime: number`
 - `sustainLevel: number`
 - `releaseTime: number`
 - `gateTime: number`
