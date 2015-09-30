@@ -97,6 +97,14 @@ var ADSREnvelope = (function () {
       return this._.decayTime;
     }
   }, {
+    key: "sustainTime",
+    set: function set(value) {
+      this._.setSustainTime(value);
+    },
+    get: function get() {
+      return this._.sustainTime;
+    }
+  }, {
     key: "sustainLevel",
     set: function set(value) {
       this._.setSustainLevel(value);
@@ -216,12 +224,23 @@ var ADSRParams = (function () {
     this.decayTime = time((0, _mohayonaoUtilsDefaults2["default"])(opts.decayTime, _defaultValues2["default"].decayTime));
     this.sustainLevel = level((0, _mohayonaoUtilsDefaults2["default"])(opts.sustainLevel, _defaultValues2["default"].sustainLevel));
     this.releaseTime = time((0, _mohayonaoUtilsDefaults2["default"])(opts.releaseTime, _defaultValues2["default"].releaseTime));
-    this.gateTime = time((0, _mohayonaoUtilsDefaults2["default"])(opts.gateTime, _defaultValues2["default"].gateTime));
     this.peakLevel = time((0, _mohayonaoUtilsDefaults2["default"])(opts.peakLevel, _defaultValues2["default"].peakLevel));
     this.epsilon = epsilon((0, _mohayonaoUtilsDefaults2["default"])(opts.epsilon, _defaultValues2["default"].epsilon));
     this.attackCurve = curve((0, _mohayonaoUtilsDefaults2["default"])(opts.attackCurve, _defaultValues2["default"].attackCurve));
     this.decayCurve = curve((0, _mohayonaoUtilsDefaults2["default"])(opts.decayCurve, _defaultValues2["default"].decayCurve));
     this.releaseCurve = curve((0, _mohayonaoUtilsDefaults2["default"])(opts.releaseCurve, _defaultValues2["default"].releaseCurve));
+    this.gateTime = _defaultValues2["default"].gateTime;
+
+    if (isFiniteNumber(opts.sustainTime)) {
+      this.setSustainTime(opts.sustainTime);
+    }
+    if (isFiniteNumber(opts.gateTime)) {
+      this.setGateTime(opts.gateTime);
+    }
+    if (isFiniteNumber(opts.duration)) {
+      this.setDuration(opts.duration);
+    }
+
     this.update();
   }
 
@@ -261,6 +280,13 @@ var ADSRParams = (function () {
     value: function setDecayTime(value) {
       this.decayTime = time(value);
       this.update();
+    }
+  }, {
+    key: "setSustainTime",
+    value: function setSustainTime(value) {
+      var sustainTime = time(value);
+
+      this.setGateTime(this.attackTime + this.decayTime + sustainTime);
     }
   }, {
     key: "setSustainLevel",
@@ -313,6 +339,7 @@ var ADSRParams = (function () {
   }, {
     key: "update",
     value: function update() {
+      this.sustainTime = Math.max(0, this.gateTime - this.attackTime - this.decayTime);
       this.duration = this.gateTime + this.releaseTime;
       this.envelope = _EnvelopeBuilder2["default"].build(this);
     }
@@ -322,6 +349,10 @@ var ADSRParams = (function () {
 })();
 
 exports["default"] = ADSRParams;
+
+function isFiniteNumber(value) {
+  return typeof value === "number" && isFinite(value);
+}
 
 function time(value) {
   return Math.max(0, value) || 0;
