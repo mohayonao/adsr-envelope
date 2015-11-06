@@ -1,6 +1,6 @@
 # ADSR ENVELOPE
 [![Build Status](http://img.shields.io/travis/mohayonao/adsr-envelope.svg?style=flat-square)](https://travis-ci.org/mohayonao/adsr-envelope)
-[![NPM Version](http://img.shields.io/npm/v/@mohayonao/adsr-envelope.svg?style=flat-square)](https://www.npmjs.org/package/@mohayonao/adsr-envelope)
+[![NPM Version](http://img.shields.io/npm/v/adsr-envelope.svg?style=flat-square)](https://www.npmjs.org/package/adsr-envelope)
 [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://mohayonao.mit-license.org/)
 
 > ADSR Envelope
@@ -10,7 +10,7 @@
 Node.js
 
 ```sh
-npm install @mohayonao/adsr-envelope
+npm install adsr-envelope
 ```
 
 ## Online Demo
@@ -27,7 +27,7 @@ npm install @mohayonao/adsr-envelope
   - `decayTime: number` _default: **0.3** (300msec)_
   - `sustainLevel: number` _default: **0.5**_
   - `releaseTime: number` _default: **1** (1sec)_
-  - `gateTime: number` _default: **1** (1sec)_
+  - `gateTime: number` _default: **Infinity**_
   - `sustainTime: number`
   - `duration: number`
   - `peakLevel: number` _default: **1**_
@@ -60,10 +60,10 @@ npm install @mohayonao/adsr-envelope
 - `clone(): ADSREnvelope`
 
 ## Example
-### sequencer model
+### sequencer style
 
 ```js
-import ADSREnvelope from "@mohayonao/adsr-envelope";
+import ADSREnvelope from "adsr-envelope";
 
 let audioContext = new AudioContext();
 let oscillator = audioContext.createOscillator();
@@ -95,10 +95,10 @@ oscillator.connect(gain);
 gain.connect(audioContext.destination);
 ```
 
-### noteOn / noteOff model
+### noteOn / noteOff style
 
 ```js
-import ADSREnvelope from "@mohayonao/adsr-envelope";
+import ADSREnvelope from "adsr-envelope";
 
 let audioContext = new AudioContext();
 let adsr = new ADSREnvelope({
@@ -152,7 +152,7 @@ midiKeyboard.on("noteOn", ({ noteNumber }) => {
     noteMap[noteNumber].noteOff();
   }
 
-  noteMap[noteNumber] = new Note(audioContext, noteNumber, adsr);
+  noteMap[noteNumber] = new Note(audioContext, noteNumber, adsr.clone());
   noteMap[noteNumber].noteOn();
 });
 midiKeyboard.on("noteOff", ({ noteNumber }) => {
