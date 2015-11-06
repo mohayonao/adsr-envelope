@@ -190,14 +190,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var _mohayonaoUtilsDefaults = require("@mohayonao/utils/defaults");
-
-var _mohayonaoUtilsDefaults2 = _interopRequireDefault(_mohayonaoUtilsDefaults);
-
-var _mohayonaoUtilsConstrain = require("@mohayonao/utils/constrain");
-
-var _mohayonaoUtilsConstrain2 = _interopRequireDefault(_mohayonaoUtilsConstrain);
-
 var _EnvelopeBuilder = require("./EnvelopeBuilder");
 
 var _EnvelopeBuilder2 = _interopRequireDefault(_EnvelopeBuilder);
@@ -210,6 +202,18 @@ var _defaultValues = require("./defaultValues");
 
 var _defaultValues2 = _interopRequireDefault(_defaultValues);
 
+var _utilsDefaults = require("./utils/defaults");
+
+var _utilsDefaults2 = _interopRequireDefault(_utilsDefaults);
+
+var _utilsConstrain = require("./utils/constrain");
+
+var _utilsConstrain2 = _interopRequireDefault(_utilsConstrain);
+
+var _utilsIsFiniteNumber = require("./utils/isFiniteNumber");
+
+var _utilsIsFiniteNumber2 = _interopRequireDefault(_utilsIsFiniteNumber);
+
 var _constants = require("./constants");
 
 var EPSILON = 2.220446049250313e-16;
@@ -220,24 +224,24 @@ var ADSRParams = (function () {
 
     _classCallCheck(this, ADSRParams);
 
-    this.attackTime = time((0, _mohayonaoUtilsDefaults2["default"])(opts.attackTime, _defaultValues2["default"].attackTime));
-    this.decayTime = time((0, _mohayonaoUtilsDefaults2["default"])(opts.decayTime, _defaultValues2["default"].decayTime));
-    this.sustainLevel = level((0, _mohayonaoUtilsDefaults2["default"])(opts.sustainLevel, _defaultValues2["default"].sustainLevel));
-    this.releaseTime = time((0, _mohayonaoUtilsDefaults2["default"])(opts.releaseTime, _defaultValues2["default"].releaseTime));
-    this.peakLevel = time((0, _mohayonaoUtilsDefaults2["default"])(opts.peakLevel, _defaultValues2["default"].peakLevel));
-    this.epsilon = epsilon((0, _mohayonaoUtilsDefaults2["default"])(opts.epsilon, _defaultValues2["default"].epsilon));
-    this.attackCurve = curve((0, _mohayonaoUtilsDefaults2["default"])(opts.attackCurve, _defaultValues2["default"].attackCurve));
-    this.decayCurve = curve((0, _mohayonaoUtilsDefaults2["default"])(opts.decayCurve, _defaultValues2["default"].decayCurve));
-    this.releaseCurve = curve((0, _mohayonaoUtilsDefaults2["default"])(opts.releaseCurve, _defaultValues2["default"].releaseCurve));
+    this.attackTime = time((0, _utilsDefaults2["default"])(opts.attackTime, _defaultValues2["default"].attackTime));
+    this.decayTime = time((0, _utilsDefaults2["default"])(opts.decayTime, _defaultValues2["default"].decayTime));
+    this.sustainLevel = level((0, _utilsDefaults2["default"])(opts.sustainLevel, _defaultValues2["default"].sustainLevel));
+    this.releaseTime = time((0, _utilsDefaults2["default"])(opts.releaseTime, _defaultValues2["default"].releaseTime));
+    this.peakLevel = time((0, _utilsDefaults2["default"])(opts.peakLevel, _defaultValues2["default"].peakLevel));
+    this.epsilon = epsilon((0, _utilsDefaults2["default"])(opts.epsilon, _defaultValues2["default"].epsilon));
+    this.attackCurve = curve((0, _utilsDefaults2["default"])(opts.attackCurve, _defaultValues2["default"].attackCurve));
+    this.decayCurve = curve((0, _utilsDefaults2["default"])(opts.decayCurve, _defaultValues2["default"].decayCurve));
+    this.releaseCurve = curve((0, _utilsDefaults2["default"])(opts.releaseCurve, _defaultValues2["default"].releaseCurve));
     this.gateTime = _defaultValues2["default"].gateTime;
 
-    if (isFiniteNumber(opts.sustainTime)) {
+    if ((0, _utilsIsFiniteNumber2["default"])(opts.sustainTime)) {
       this.setSustainTime(opts.sustainTime);
     }
-    if (isFiniteNumber(opts.gateTime)) {
+    if ((0, _utilsIsFiniteNumber2["default"])(opts.gateTime)) {
       this.setGateTime(opts.gateTime);
     }
-    if (isFiniteNumber(opts.duration)) {
+    if ((0, _utilsIsFiniteNumber2["default"])(opts.duration)) {
       this.setDuration(opts.duration);
     }
 
@@ -350,20 +354,16 @@ var ADSRParams = (function () {
 
 exports["default"] = ADSRParams;
 
-function isFiniteNumber(value) {
-  return typeof value === "number" && isFinite(value);
-}
-
 function time(value) {
   return Math.max(0, value) || 0;
 }
 
 function level(value) {
-  return (0, _mohayonaoUtilsConstrain2["default"])(+value, 0, 1) || 0;
+  return (0, _utilsConstrain2["default"])(+value, 0, 1) || 0;
 }
 
 function epsilon(value) {
-  return (0, _mohayonaoUtilsConstrain2["default"])(+value, EPSILON, 1e-2) || 1e-3;
+  return (0, _utilsConstrain2["default"])(+value, EPSILON, 1e-2) || 1e-3;
 }
 
 function curve(type) {
@@ -383,7 +383,7 @@ function method(type) {
   }
 }
 module.exports = exports["default"];
-},{"./EnvelopeBuilder":4,"./EnvelopeValue":6,"./constants":7,"./defaultValues":8,"@mohayonao/utils/constrain":10,"@mohayonao/utils/defaults":11}],4:[function(require,module,exports){
+},{"./EnvelopeBuilder":4,"./EnvelopeValue":6,"./constants":7,"./defaultValues":8,"./utils/constrain":10,"./utils/defaults":11,"./utils/isFiniteNumber":12}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -392,19 +392,19 @@ Object.defineProperty(exports, "__esModule", {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _mohayonaoUtilsLinlin = require("@mohayonao/utils/linlin");
-
-var _mohayonaoUtilsLinlin2 = _interopRequireDefault(_mohayonaoUtilsLinlin);
-
-var _mohayonaoUtilsLinexp = require("@mohayonao/utils/linexp");
-
-var _mohayonaoUtilsLinexp2 = _interopRequireDefault(_mohayonaoUtilsLinexp);
-
-var _constants = require("./constants");
-
 var _EnvelopeReducer = require("./EnvelopeReducer");
 
 var _EnvelopeReducer2 = _interopRequireDefault(_EnvelopeReducer);
+
+var _utilsLinlin = require("./utils/linlin");
+
+var _utilsLinlin2 = _interopRequireDefault(_utilsLinlin);
+
+var _utilsLinexp = require("./utils/linexp");
+
+var _utilsLinexp2 = _interopRequireDefault(_utilsLinexp);
+
+var _constants = require("./constants");
 
 function build(params) {
   var envelope = buildEnvelope(params);
@@ -416,9 +416,9 @@ function build(params) {
 
 function getCurveItems(curveType, epsilon) {
   if (curveType === "exp") {
-    return { zero: epsilon, calc: _mohayonaoUtilsLinexp2["default"], type: _constants.EXP };
+    return { zero: epsilon, calc: _utilsLinexp2["default"], type: _constants.EXP };
   }
-  return { zero: 0, calc: _mohayonaoUtilsLinlin2["default"], type: _constants.LIN };
+  return { zero: 0, calc: _utilsLinlin2["default"], type: _constants.LIN };
 }
 
 function buildEnvelope(params) {
@@ -855,7 +855,7 @@ function buildAttackDecayReleaseEnvelope(params) {
 
 exports["default"] = { build: build };
 module.exports = exports["default"];
-},{"./EnvelopeReducer":5,"./constants":7,"@mohayonao/utils/linexp":12,"@mohayonao/utils/linlin":13}],5:[function(require,module,exports){
+},{"./EnvelopeReducer":5,"./constants":7,"./utils/linexp":13,"./utils/linlin":14}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -915,13 +915,13 @@ Object.defineProperty(exports, "__esModule", {
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var _mohayonaoUtilsLinlin = require("@mohayonao/utils/linlin");
+var _utilsLinlin = require("./utils/linlin");
 
-var _mohayonaoUtilsLinlin2 = _interopRequireDefault(_mohayonaoUtilsLinlin);
+var _utilsLinlin2 = _interopRequireDefault(_utilsLinlin);
 
-var _mohayonaoUtilsLinexp = require("@mohayonao/utils/linexp");
+var _utilsLinexp = require("./utils/linexp");
 
-var _mohayonaoUtilsLinexp2 = _interopRequireDefault(_mohayonaoUtilsLinexp);
+var _utilsLinexp2 = _interopRequireDefault(_utilsLinexp);
 
 var _constants = require("./constants");
 
@@ -933,9 +933,9 @@ function at(envelope, time) {
     if (e0[_constants.TIME] <= time && time < e1[_constants.TIME]) {
       switch (e1[_constants.TYPE]) {
         case _constants.LIN:
-          return (0, _mohayonaoUtilsLinlin2["default"])(time, e0[_constants.TIME], e1[_constants.TIME], e0[_constants.VALUE], e1[_constants.VALUE]);
+          return (0, _utilsLinlin2["default"])(time, e0[_constants.TIME], e1[_constants.TIME], e0[_constants.VALUE], e1[_constants.VALUE]);
         case _constants.EXP:
-          return (0, _mohayonaoUtilsLinexp2["default"])(time, e0[_constants.TIME], e1[_constants.TIME], e0[_constants.VALUE], e1[_constants.VALUE]);
+          return (0, _utilsLinexp2["default"])(time, e0[_constants.TIME], e1[_constants.TIME], e0[_constants.VALUE], e1[_constants.VALUE]);
         default:
           return e0[_constants.VALUE];
       }
@@ -947,7 +947,7 @@ function at(envelope, time) {
 
 exports["default"] = { at: at };
 module.exports = exports["default"];
-},{"./constants":7,"@mohayonao/utils/linexp":12,"@mohayonao/utils/linlin":13}],7:[function(require,module,exports){
+},{"./constants":7,"./utils/linexp":13,"./utils/linlin":14}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -977,7 +977,7 @@ exports["default"] = {
   decayTime: 0.3,
   sustainLevel: 0.5,
   releaseTime: 1,
-  gateTime: 1,
+  gateTime: Infinity,
   peakLevel: 1,
   epsilon: 1e-3,
   attackCurve: "lin",
@@ -1001,24 +1001,69 @@ var _ADSREnvelope2 = _interopRequireDefault(_ADSREnvelope);
 exports["default"] = _ADSREnvelope2["default"];
 module.exports = exports["default"];
 },{"./ADSREnvelope":2}],10:[function(require,module,exports){
-module.exports = function(value, minValue, maxValue) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = constrain;
+
+function constrain(value, minValue, maxValue) {
   return Math.max(minValue, Math.min(value, maxValue));
-};
+}
 
+module.exports = exports["default"];
 },{}],11:[function(require,module,exports){
-module.exports = function(value, defaultValue) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = defaults;
+
+function defaults(value, defaultValue) {
   return typeof value !== "undefined" ? value : defaultValue;
-};
+}
 
+module.exports = exports["default"];
 },{}],12:[function(require,module,exports){
-module.exports = function(value, inMin, inMax, outMin, outMax) {
-  return Math.pow(outMax / outMin, (value - inMin) / (inMax - inMin)) * outMin;
-};
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = isFiniteNumber;
+
+function isFiniteNumber(value) {
+  return typeof value === "number" && isFinite(value);
+}
+
+module.exports = exports["default"];
 },{}],13:[function(require,module,exports){
-module.exports = function(value, inMin, inMax, outMin, outMax) {
-  return (value - inMin) / (inMax - inMin) * (outMax - outMin) + outMin;
-};
+"use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = linexp;
+
+function linexp(value, inMin, inMax, outMin, outMax) {
+  return Math.pow(outMax / outMin, (value - inMin) / (inMax - inMin)) * outMin;
+}
+
+module.exports = exports["default"];
+},{}],14:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports["default"] = linlin;
+
+function linlin(value, inMin, inMax, outMin, outMax) {
+  return (value - inMin) / (inMax - inMin) * (outMax - outMin) + outMin;
+}
+
+module.exports = exports["default"];
 },{}]},{},[1])(1)
 });
