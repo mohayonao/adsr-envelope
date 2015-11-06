@@ -128,7 +128,7 @@ export default class ADSREnvelope {
       epsilon: this._.epsilon,
       attackCurve: this._.attackCurve,
       decayCurve: this._.decayCurve,
-      releaseCurve: this._.releaseCurve,
+      releaseCurve: this._.releaseCurve
     });
   }
 }

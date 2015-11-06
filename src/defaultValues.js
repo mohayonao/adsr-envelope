@@ -8,5 +8,5 @@ export default {
   epsilon: 1e-3,
   attackCurve: "lin",
   decayCurve: "lin",
-  releaseCurve: "lin",
+  releaseCurve: "lin"
 };

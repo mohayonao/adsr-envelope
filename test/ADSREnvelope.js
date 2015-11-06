@@ -31,7 +31,7 @@ describe("ADSREnvelope", () => {
         epsilon: 0.0001,
         attackCurve: "exp",
         decayCurve: "exp",
-        releaseCurve: "exp",
+        releaseCurve: "exp"
       });
 
       assert(env instanceof ADSREnvelope);
@@ -251,7 +251,7 @@ describe("ADSREnvelope", () => {
         releaseTime: 10,
         gateTime: 20,
         epsilon: 1e-6,
-        releaseCurve: "exp",
+        releaseCurve: "exp"
       });
 
       gain.setValueAtTime = sinon.spy(gain.setValueAtTime.bind(gain));
@@ -280,7 +280,7 @@ describe("ADSREnvelope", () => {
         releaseTime: 10,
         gateTime: 20,
         epsilon: 1e-6,
-        releaseCurve: "exp",
+        releaseCurve: "exp"
       });
 
       assert.deepEqual(env.getWebAudioAPIMethods(), [
@@ -288,7 +288,7 @@ describe("ADSREnvelope", () => {
         [ "linearRampToValueAtTime", 1, 5 ],
         [ "linearRampToValueAtTime", 0.5, 10 ],
         [ "setValueAtTime", 0.5, 20 ],
-        [ "exponentialRampToValueAtTime", 1e-6, 30 ],
+        [ "exponentialRampToValueAtTime", 1e-6, 30 ]
       ]);
     });
   });
