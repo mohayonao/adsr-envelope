@@ -6,9 +6,7 @@
   "bugs": {
     "url": "https://github.com/mohayonao/adsr-envelope/issues"
   },
-  "dependencies": {
-    "@mohayonao/utils": "^0.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-eslint": "^4.1.1",

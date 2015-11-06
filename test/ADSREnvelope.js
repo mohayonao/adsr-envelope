@@ -2,6 +2,7 @@ import "web-audio-test-api";
 import assert from "power-assert";
 import sinon from "sinon";
 import ADSREnvelope from "../src/ADSREnvelope";
+import defaultValues from "../src/defaultValues";
 
 describe("ADSREnvelope", () => {
   describe("constructor(opts = {})", () => {
@@ -9,16 +10,16 @@ describe("ADSREnvelope", () => {
       let env = new ADSREnvelope();
 
       assert(env instanceof ADSREnvelope);
-      assert(env.attackTime === 0.01);
-      assert(env.decayTime === 0.3);
-      assert(env.sustainLevel === 0.5);
-      assert(env.releaseTime === 1);
-      assert(env.gateTime === 1);
-      assert(env.peakLevel === 1);
-      assert(env.epsilon === 1e-3);
-      assert(env.attackCurve === "lin");
-      assert(env.decayCurve === "lin");
-      assert(env.releaseCurve === "lin");
+      assert(env.attackTime === defaultValues.attackTime);
+      assert(env.decayTime === defaultValues.decayTime);
+      assert(env.sustainLevel === defaultValues.sustainLevel);
+      assert(env.releaseTime === defaultValues.releaseTime);
+      assert(env.gateTime === defaultValues.gateTime);
+      assert(env.peakLevel === defaultValues.peakLevel);
+      assert(env.epsilon === defaultValues.epsilon);
+      assert(env.attackCurve === defaultValues.attackCurve);
+      assert(env.decayCurve === defaultValues.decayCurve);
+      assert(env.releaseCurve === defaultValues.releaseCurve);
     });
     it("works", () => {
       let env = new ADSREnvelope({
@@ -49,7 +50,7 @@ describe("ADSREnvelope", () => {
   });
   describe("#duration: number", () => {
     it("works", () => {
-      let env = new ADSREnvelope({ attackTime: 2, decayTime: 3, gateTime: 10, releaseTime: 5 });
+      let env = new ADSREnvelope({ attackTime: 2, decayTime: 3, duration: 15, releaseTime: 5 });
 
       assert(env.duration === 15);
 
