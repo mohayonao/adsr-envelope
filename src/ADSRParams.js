@@ -1,8 +1,9 @@
-import defaults from "@mohayonao/utils/defaults";
-import constrain from "@mohayonao/utils/constrain";
 import EnvelopeBuilder from "./EnvelopeBuilder";
 import EnvelopeValue from "./EnvelopeValue";
 import defaultValues from "./defaultValues";
+import defaults from "./utils/defaults";
+import constrain from "./utils/constrain";
+import isFiniteNumber from "./utils/isFiniteNumber";
 import { SET, LIN, EXP } from "./constants";
 
 const EPSILON = 2.220446049250313e-16;
@@ -110,10 +111,6 @@ export default class ADSRParams {
     this.duration = this.gateTime + this.releaseTime;
     this.envelope = EnvelopeBuilder.build(this);
   }
-}
-
-function isFiniteNumber(value) {
-  return typeof value === "number" && isFinite(value);
 }
 
 function time(value) {

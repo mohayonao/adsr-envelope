@@ -1,4 +1,5 @@
 import { SET, TYPE, VALUE, TIME } from "./constants";
+
 function reduce(envelope) {
   envelope = envelope.filter((items) => {
     return isFinite(items[TIME]);

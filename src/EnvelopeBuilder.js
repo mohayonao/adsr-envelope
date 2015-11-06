@@ -1,7 +1,7 @@
-import linlin from "@mohayonao/utils/linlin";
-import linexp from "@mohayonao/utils/linexp";
-import { SET, LIN, EXP } from "./constants";
 import EnvelopeReducer from "./EnvelopeReducer";
+import linlin from "./utils/linlin";
+import linexp from "./utils/linexp";
+import { SET, LIN, EXP } from "./constants";
 
 function build(params) {
   let envelope = buildEnvelope(params);

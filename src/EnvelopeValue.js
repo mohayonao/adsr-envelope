@@ -1,5 +1,5 @@
-import linlin from "@mohayonao/utils/linlin";
-import linexp from "@mohayonao/utils/linexp";
+import linlin from "./utils/linlin";
+import linexp from "./utils/linexp";
 import { LIN, EXP, TYPE, VALUE, TIME } from "./constants";
 
 function at(envelope, time) {

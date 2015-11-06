@@ -1,14 +1,12 @@
 {
-  "name": "@mohayonao/adsr-envelope",
+  "name": "adsr-envelope",
   "description": "adsr envelope",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "author": "mohayonao <mohayonao@gmail.com>",
   "bugs": {
     "url": "https://github.com/mohayonao/adsr-envelope/issues"
   },
-  "dependencies": {
-    "@mohayonao/utils": "^0.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-eslint": "^4.1.1",
@@ -27,6 +25,12 @@
     "README.md",
     "index.js",
     "lib"
+  ],
+  "homepage": "http://mohayonao.github.io/adsr-envelope/",
+  "keywords": [
+    "WebAudioAPI",
+    "adsr",
+    "envelope"
   ],
   "license": "MIT",
   "main": "index.js",

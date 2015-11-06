@@ -14,7 +14,7 @@ describe("EnvelopeValue", () => {
         [ LIN, 1, 5 ],
         [ LIN, 0.5, 7 ],
         [ SET, 0.5, 10 ],
-        [ EXP, 0.01, 15 ],
+        [ EXP, 0.01, 15 ]
       ];
 
       assert(closeTo(EnvelopeValue.at(envelope, 0), 0, 1e-6));

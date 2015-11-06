@@ -13,7 +13,7 @@ function makeParams(attackTime, decayTime, releaseTime, gateTime, curve = "lin")
     epsilon: 1e-3,
     attackCurve: curve,
     decayCurve: curve,
-    releaseCurve: curve,
+    releaseCurve: curve
   };
 }
 
@@ -25,7 +25,7 @@ describe("EnvelopeBuilder", () => {
         let envelope = EnvelopeBuilder.build(params);
 
         assert.deepEqual(envelope, [
-          [ SET, 0, 0 ],
+          [ SET, 0, 0 ]
         ]);
       });
       it("gateTime: 4", () => {
@@ -34,7 +34,7 @@ describe("EnvelopeBuilder", () => {
 
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
-          [ SET, 0, 4 ],
+          [ SET, 0, 4 ]
         ]);
       });
       it("gateTime: 5", () => {
@@ -43,7 +43,7 @@ describe("EnvelopeBuilder", () => {
 
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
-          [ SET, 0, 5 ],
+          [ SET, 0, 5 ]
         ]);
       });
       it("gateTime: 8", () => {
@@ -52,7 +52,7 @@ describe("EnvelopeBuilder", () => {
 
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
-          [ SET, 0, 8 ],
+          [ SET, 0, 8 ]
         ]);
       });
       it("gateTime: 10", () => {
@@ -61,7 +61,7 @@ describe("EnvelopeBuilder", () => {
 
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
-          [ SET, 0, 8 ],
+          [ SET, 0, 8 ]
         ]);
       });
       it("gateTime: 20", () => {
@@ -70,7 +70,7 @@ describe("EnvelopeBuilder", () => {
 
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
-          [ SET, 0, 20 ],
+          [ SET, 0, 20 ]
         ]);
       });
       it("gateTime: Infinity", () => {
@@ -78,7 +78,7 @@ describe("EnvelopeBuilder", () => {
         let envelope = EnvelopeBuilder.build(params);
 
         assert.deepEqual(envelope, [
-          [ SET, 0.5, 0 ],
+          [ SET, 0.5, 0 ]
         ]);
       });
     });
@@ -89,7 +89,7 @@ describe("EnvelopeBuilder", () => {
 
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
-          [ LIN, 0, 10 ],
+          [ LIN, 0, 10 ]
         ]);
       });
       it("gateTime: 4", () => {
@@ -99,7 +99,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
           [ SET, 0.5, 4 ],
-          [ LIN, 0, 14 ],
+          [ LIN, 0, 14 ]
         ]);
       });
       it("gateTime: 5", () => {
@@ -109,7 +109,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
           [ SET, 0.5, 5 ],
-          [ LIN, 0, 15 ],
+          [ LIN, 0, 15 ]
         ]);
       });
       it("gateTime: 8", () => {
@@ -119,7 +119,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
           [ SET, 0.5, 8 ],
-          [ LIN, 0, 18 ],
+          [ LIN, 0, 18 ]
         ]);
       });
       it("gateTime: 10", () => {
@@ -129,7 +129,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
           [ SET, 0.5, 10 ],
-          [ LIN, 0, 20 ],
+          [ LIN, 0, 20 ]
         ]);
       });
       it("gateTime: 20", () => {
@@ -139,7 +139,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0.5, 0 ],
           [ SET, 0.5, 20 ],
-          [ LIN, 0, 30 ],
+          [ LIN, 0, 30 ]
         ]);
       });
       it("gateTime: Infinity", () => {
@@ -147,7 +147,7 @@ describe("EnvelopeBuilder", () => {
         let envelope = EnvelopeBuilder.build(params);
 
         assert.deepEqual(envelope, [
-          [ SET, 0.5, 0 ],
+          [ SET, 0.5, 0 ]
         ]);
       });
     });
@@ -157,7 +157,7 @@ describe("EnvelopeBuilder", () => {
         let envelope = EnvelopeBuilder.build(params);
 
         assert.deepEqual(envelope, [
-          [ SET, 0, 0 ],
+          [ SET, 0, 0 ]
         ]);
       });
       it("gateTime: 4", () => {
@@ -167,7 +167,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
           [ LIN, 0.6, 4 ],
-          [ SET, 0, 4 ],
+          [ SET, 0, 4 ]
         ]);
       });
       it("gateTime: 5", () => {
@@ -177,7 +177,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
           [ LIN, 0.5, 5 ],
-          [ SET, 0, 5 ],
+          [ SET, 0, 5 ]
         ]);
       });
       it("gateTime: 8", () => {
@@ -187,7 +187,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
           [ LIN, 0.5, 5 ],
-          [ SET, 0, 8 ],
+          [ SET, 0, 8 ]
         ]);
       });
       it("gateTime: 10", () => {
@@ -197,7 +197,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
           [ LIN, 0.5, 5 ],
-          [ SET, 0, 10 ],
+          [ SET, 0, 10 ]
         ]);
       });
       it("gateTime: 20", () => {
@@ -207,7 +207,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
           [ LIN, 0.5, 5 ],
-          [ SET, 0, 20 ],
+          [ SET, 0, 20 ]
         ]);
       });
       it("gateTime: Infinity", () => {
@@ -216,7 +216,7 @@ describe("EnvelopeBuilder", () => {
 
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
-          [ LIN, 0.5, 5 ],
+          [ LIN, 0.5, 5 ]
         ]);
       });
     });
@@ -227,7 +227,7 @@ describe("EnvelopeBuilder", () => {
 
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
-          [ LIN, 0, 10 ],
+          [ LIN, 0, 10 ]
         ]);
       });
       it("gateTime: 4", () => {
@@ -237,7 +237,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
           [ LIN, 0.6, 4 ],
-          [ LIN, 0, 14 ],
+          [ LIN, 0, 14 ]
         ]);
       });
       it("gateTime: 5", () => {
@@ -247,7 +247,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
           [ LIN, 0.5, 5 ],
-          [ LIN, 0, 15 ],
+          [ LIN, 0, 15 ]
         ]);
       });
       it("gateTime: 8", () => {
@@ -258,7 +258,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 1, 0 ],
           [ LIN, 0.5, 5 ],
           [ SET, 0.5, 8 ],
-          [ LIN, 0, 18 ],
+          [ LIN, 0, 18 ]
         ]);
       });
       it("gateTime: 10", () => {
@@ -269,7 +269,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 1, 0 ],
           [ LIN, 0.5, 5 ],
           [ SET, 0.5, 10 ],
-          [ LIN, 0, 20 ],
+          [ LIN, 0, 20 ]
         ]);
       });
       it("gateTime: 20", () => {
@@ -280,7 +280,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 1, 0 ],
           [ LIN, 0.5, 5 ],
           [ SET, 0.5, 20 ],
-          [ LIN, 0, 30 ],
+          [ LIN, 0, 30 ]
         ]);
       });
       it("gateTime: Infinity", () => {
@@ -289,7 +289,7 @@ describe("EnvelopeBuilder", () => {
 
         assert.deepEqual(envelope, [
           [ SET, 1, 0 ],
-          [ LIN, 0.5, 5 ],
+          [ LIN, 0.5, 5 ]
         ]);
       });
     });
@@ -299,7 +299,7 @@ describe("EnvelopeBuilder", () => {
         let envelope = EnvelopeBuilder.build(params);
 
         assert.deepEqual(envelope, [
-          [ SET, 0, 0 ],
+          [ SET, 0, 0 ]
         ]);
       });
       it("gateTime: 4", () => {
@@ -309,7 +309,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 0.8, 4 ],
-          [ SET, 0, 4 ],
+          [ SET, 0, 4 ]
         ]);
       });
       it("gateTime: 5", () => {
@@ -319,7 +319,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
-          [ SET, 0, 5 ],
+          [ SET, 0, 5 ]
         ]);
       });
       it("gateTime: 8", () => {
@@ -330,7 +330,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
           [ SET, 0.5, 5 ],
-          [ SET, 0, 8 ],
+          [ SET, 0, 8 ]
         ]);
       });
       it("gateTime: 10", () => {
@@ -341,7 +341,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
           [ SET, 0.5, 5 ],
-          [ SET, 0, 10 ],
+          [ SET, 0, 10 ]
         ]);
       });
       it("gateTime: 20", () => {
@@ -352,7 +352,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
           [ SET, 0.5, 5 ],
-          [ SET, 0, 20 ],
+          [ SET, 0, 20 ]
         ]);
       });
       it("gateTime: Infinity", () => {
@@ -362,7 +362,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
-          [ SET, 0.5, 5 ],
+          [ SET, 0.5, 5 ]
         ]);
       });
     });
@@ -372,7 +372,7 @@ describe("EnvelopeBuilder", () => {
         let envelope = EnvelopeBuilder.build(params);
 
         assert.deepEqual(envelope, [
-          [ SET, 0, 0 ],
+          [ SET, 0, 0 ]
         ]);
       });
       it("gateTime: 4", () => {
@@ -382,7 +382,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 0.8, 4 ],
-          [ LIN, 0, 14 ],
+          [ LIN, 0, 14 ]
         ]);
       });
       it("gateTime: 5", () => {
@@ -392,7 +392,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
-          [ LIN, 0, 15 ],
+          [ LIN, 0, 15 ]
         ]);
       });
       it("gateTime: 8", () => {
@@ -404,7 +404,7 @@ describe("EnvelopeBuilder", () => {
           [ LIN, 1, 5 ],
           [ SET, 0.5, 5 ],
           [ SET, 0.5, 8 ],
-          [ LIN, 0, 18 ],
+          [ LIN, 0, 18 ]
         ]);
       });
       it("gateTime: 10", () => {
@@ -416,7 +416,7 @@ describe("EnvelopeBuilder", () => {
           [ LIN, 1, 5 ],
           [ SET, 0.5, 5 ],
           [ SET, 0.5, 10 ],
-          [ LIN, 0, 20 ],
+          [ LIN, 0, 20 ]
         ]);
       });
       it("gateTime: 20", () => {
@@ -428,7 +428,7 @@ describe("EnvelopeBuilder", () => {
           [ LIN, 1, 5 ],
           [ SET, 0.5, 5 ],
           [ SET, 0.5, 20 ],
-          [ LIN, 0, 30 ],
+          [ LIN, 0, 30 ]
         ]);
       });
       it("gateTime: Infinity", () => {
@@ -438,7 +438,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
-          [ SET, 0.5, 5 ],
+          [ SET, 0.5, 5 ]
         ]);
       });
     });
@@ -448,7 +448,7 @@ describe("EnvelopeBuilder", () => {
         let envelope = EnvelopeBuilder.build(params);
 
         assert.deepEqual(envelope, [
-          [ SET, 0, 0 ],
+          [ SET, 0, 0 ]
         ]);
       });
       it("gateTime: 4", () => {
@@ -458,7 +458,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 0.8, 4 ],
-          [ SET, 0, 4 ],
+          [ SET, 0, 4 ]
         ]);
       });
       it("gateTime: 5", () => {
@@ -468,7 +468,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
-          [ SET, 0, 5 ],
+          [ SET, 0, 5 ]
         ]);
       });
       it("gateTime: 8", () => {
@@ -479,7 +479,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
           [ LIN, 0.7, 8 ],
-          [ SET, 0, 8 ],
+          [ SET, 0, 8 ]
         ]);
       });
       it("gateTime: 10", () => {
@@ -490,7 +490,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
           [ LIN, 0.5, 10 ],
-          [ SET, 0, 10 ],
+          [ SET, 0, 10 ]
         ]);
       });
       it("gateTime: 20", () => {
@@ -501,7 +501,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
           [ LIN, 0.5, 10 ],
-          [ SET, 0, 20 ],
+          [ SET, 0, 20 ]
         ]);
       });
       it("gateTime: Infinity", () => {
@@ -511,7 +511,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
-          [ LIN, 0.5, 10 ],
+          [ LIN, 0.5, 10 ]
         ]);
       });
     });
@@ -521,7 +521,7 @@ describe("EnvelopeBuilder", () => {
         let envelope = EnvelopeBuilder.build(params);
 
         assert.deepEqual(envelope, [
-          [ SET, 0, 0 ],
+          [ SET, 0, 0 ]
         ]);
       });
       it("gateTime: 4", () => {
@@ -531,7 +531,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 0.8, 4 ],
-          [ LIN, 0, 14 ],
+          [ LIN, 0, 14 ]
         ]);
       });
       it("gateTime: 5", () => {
@@ -541,7 +541,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
-          [ LIN, 0, 15 ],
+          [ LIN, 0, 15 ]
         ]);
       });
       it("gateTime: 8", () => {
@@ -552,7 +552,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
           [ LIN, 0.7, 8 ],
-          [ LIN, 0, 18 ],
+          [ LIN, 0, 18 ]
         ]);
       });
       it("gateTime: 10", () => {
@@ -563,7 +563,7 @@ describe("EnvelopeBuilder", () => {
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
           [ LIN, 0.5, 10 ],
-          [ LIN, 0, 20 ],
+          [ LIN, 0, 20 ]
         ]);
       });
       it("gateTime: 20", () => {
@@ -575,7 +575,7 @@ describe("EnvelopeBuilder", () => {
           [ LIN, 1, 5 ],
           [ LIN, 0.5, 10 ],
           [ SET, 0.5, 20 ],
-          [ LIN, 0, 30 ],
+          [ LIN, 0, 30 ]
         ]);
       });
       it("gateTime: Infinity", () => {
@@ -585,7 +585,7 @@ describe("EnvelopeBuilder", () => {
         assert.deepEqual(envelope, [
           [ SET, 0, 0 ],
           [ LIN, 1, 5 ],
-          [ LIN, 0.5, 10 ],
+          [ LIN, 0.5, 10 ]
         ]);
       });
     });
